@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ultron-sub-bots"
+version = "1.0.0"
+description = "Parallel web scraping system with specialized sub-bots using Firecrawl"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Ultron Sub-Bots Contributors"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "httpx>=0.27.0",  # For potential direct API usage instead of CLI
+    "pydantic>=2.0",  # For better data validation
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "black>=24.0",
+    "ruff>=0.6",
+    "mypy>=1.10",
+]
+firecrawl-api = [
+    "firecrawl-py>=2.0",  # Official Firecrawl Python SDK
+]
+
+[project.scripts]
+ultron = "ultron_sub_bots.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ultron_sub_bots*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.black]
+line-length = 100
+target-version = ["py39"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+select = ["E", "F", "I", "UP", "B", "C4", "ARG", "PTH", "PL", "TRY", "SIM", "TID"]
+ignore = ["S101", "S113", "B008"]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false

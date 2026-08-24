@@ -1,0 +1,49 @@
+# Ultron AI Agent - Docker Compose (pilot deployment)
+#
+# Quick start:
+#   1. cp .env.example .env        (Windows: copy .env.example .env)
+#   2. Edit .env -> add your own API keys
+#   3. docker compose up -d --build
+#   4. Open http://localhost:5000
+#
+# Updates: click the UPDATE button in the header of the web UI.
+
+services:
+  ultron:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ultron-agent
+    ports:
+      - "5000:5000"
+    volumes:
+      # Runtime data survives updates (untracked by git, never overwritten)
+      - ./data:/app/data
+      - ./skills:/app/skills
+      - ./recipes:/app/recipes
+      - ./proposals:/app/proposals
+      - ./output:/app/output
+      - ./logs:/app/logs
+      # Your API keys live here. Mounted read-write so keys entered via the
+      # UI (Settings) persist to this file on the host.
+      - ./.env:/app/.env
+    environment:
+      - ULTRON_ENV=production
+      - PYTHONUNBUFFERED=1
+      # Bind to all interfaces inside the container so port mapping works
+      - AGENT_HOST=0.0.0.0
+      # ---- Self-update system ----
+      # The git URL Ultron pulls updates from when you click UPDATE.
+      # For private repos use a token:
+      #   https://<token>@github.com/<user>/<repo>.git
+      - ULTRON_REPO_URL=${ULTRON_REPO_URL:-}
+      - ULTRON_UPDATE_BRANCH=main
+      # After applying an update the process exits and Docker restarts it
+      - ULTRON_AUTO_RESTART=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:5000/api/state', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s

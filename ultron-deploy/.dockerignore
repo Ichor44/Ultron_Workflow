@@ -1,0 +1,22 @@
+# NOTE: .git is intentionally NOT ignored - the self-update system needs
+# git metadata inside the image.
+
+# Local secrets and runtime data - never bake into the image
+.env
+data/
+logs/
+output/
+proposals/
+
+# Dev clutter
+__pycache__/
+*.py[cod]
+*.bak
+.pytest_cache/
+tests/
+*.md
+!README.md
+Dockerfile
+docker-compose.yml
+.dockerignore
+.gitignore

@@ -1,0 +1,539 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Ultron — ULTRON</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitcount+Single:wght@100..900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0e;--bg-elevated:#12121a;--bg-panel:#16161f;--fg:#e8e8f0;--fg-dim:#8888a0;--border:#2a2a3e;--border-bright:#3a3a5a;--r:#f22;--r2:#c00;--rg:rgba(255,32,32,.25);--rgs:rgba(255,32,32,.5);--dk:#0d0d12;--fm:'Bitcount Single','JetBrains Mono','Courier New',monospace;--fu:'Bitcount Single','Segoe UI',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--fg);font-family:var(--fu);font-size:16px}
+body{display:grid;grid-template-rows:auto 1fr auto;min-height:100vh;height:100vh;overflow:hidden;background:radial-gradient(ellipse at 20% 50%,rgba(255,32,32,.3) 0%,transparent 60%),radial-gradient(ellipse at 80% 50%,rgba(255,32,32,.2) 0%,transparent 60%),linear-gradient(180deg,#0a0a0e 0%,#0d0d14 50%,#0a0a0e 100%)}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(60deg,rgba(42,42,62,.06) 1px,transparent 1px),linear-gradient(-60deg,rgba(42,42,62,.06) 1px,transparent 1px);background-size:40px 70px;pointer-events:none;z-index:0}
+header{padding:12px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:rgba(10,10,14,.95);backdrop-filter:blur(12px);position:relative;z-index:10}
+header::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,var(--r) 20%,var(--r) 80%,transparent 100%);opacity:.4}
+.brand{display:flex;align-items:center;gap:14px;font-family:var(--fu);font-weight:700;font-size:1.5rem;letter-spacing:-.02em}
+.brand span{font-weight:300;opacity:.4;font-size:.75em;margin-left:8px}
+.ultron-logo{width:36px;height:36px;position:relative;flex-shrink:0}.ultron-logo svg{width:100%;height:100%}
+.header-right{display:flex;gap:14px;align-items:center}
+.token-badge,.mock-badge,.terminal-btn{font-family:var(--fm)}
+.token-badge{font-size:.75rem;color:var(--fg-dim);padding:4px 14px;border:1px solid var(--border-bright);background:var(--bg-elevated);letter-spacing:.05em}
+.mock-badge{font-size:.65rem;padding:4px 10px;border:1px solid var(--r2);color:var(--r);text-transform:uppercase;letter-spacing:.12em}
+.terminal-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;transition:all .2s ease}
+.terminal-btn:hover{border-color:var(--r);color:var(--r);box-shadow:0 0 16px var(--rg)}.terminal-btn svg{width:16px;height:16px}
+.terminal-btn.update-ready{border-color:var(--r);color:var(--r);animation:update-glow 1.6s ease-in-out infinite}
+.terminal-btn:disabled{opacity:.5;cursor:wait}
+@keyframes update-glow{0%,100%{box-shadow:0 0 4px var(--rg)}50%{box-shadow:0 0 18px var(--rg)}}
+.status-dot{width:10px;height:10px;border-radius:0;background:#2a4;box-shadow:0 0 10px rgba(34,170,68,.6),inset 0 0 4px rgba(34,170,68,.4);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);transition:all .3s ease}
+.status-dot.busy{background:var(--r);box-shadow:0 0 14px var(--rgs),inset 0 0 6px rgba(255,32,32,.5);animation:pulse .8s infinite}
+.status-dot.error{background:var(--r2);box-shadow:0 0 16px rgba(204,0,0,.7),inset 0 0 6px rgba(204,0,0,.4)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+main{padding:20px 24px;display:grid;grid-template-columns:1fr 320px;gap:20px;min-height:0;overflow-y:auto;position:relative;z-index:1}
+@media(max-width:900px){main{grid-template-columns:1fr}}
+.panel{background:var(--bg-panel);border:1px solid var(--border);padding:18px 20px;position:relative;display:flex;flex-direction:column;min-height:0;transition:border-color .3s ease,box-shadow .3s ease}
+.panel:hover{border-color:var(--r2);box-shadow:0 0 30px var(--rg),inset 0 0 30px rgba(255,32,32,.02)}
+.panel::before{content:'';position:absolute;top:-1px;left:20px;right:20px;height:1px;background:linear-gradient(90deg,transparent,var(--r2),transparent);opacity:.3;transition:opacity .3s ease}
+.panel:hover::before{opacity:.7}
+.panel-title{font-family:var(--fm);font-size:.65rem;text-transform:uppercase;letter-spacing:.18em;color:var(--fg-dim);margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+.panel-title small{font-size:.6rem;opacity:.5}
+.panel-title::after{content:'◈';font-size:.5rem;color:var(--r2);opacity:.5}
+.chat-panel{display:flex;flex-direction:column;min-height:0;height:100%;max-height:100%}
+.chat-log{flex:1 1 auto;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding-right:8px;min-height:0}
+.msg{max-width:85%;padding:12px 16px;font-family:var(--fm);font-size:.85rem;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
+.msg.user{align-self:flex-end;background:linear-gradient(135deg,#1a1a2e,#12121a);border:1px solid var(--border-bright);color:var(--fg);clip-path:polygon(12px 0%,100% 0%,100% 100%,0% 100%,0% 12px);border-left:2px solid var(--r2)}
+.msg.assistant{align-self:flex-start;background:linear-gradient(135deg,#0d0d16,#11111c);border:1px solid var(--border);clip-path:polygon(0% 0%,calc(100% - 12px) 0%,100% 12px,100% 100%,0% 100%);border-right:2px solid var(--r);box-shadow:0 0 20px rgba(255,32,32,.06)}
+.msg.error{align-self:flex-start;background:#1a0808;border:1px solid var(--r2);color:#f66;clip-path:polygon(0% 0%,calc(100% - 12px) 0%,100% 12px,100% 100%,0% 100%);border-right:2px solid var(--r)}
+.typing{align-self:flex-start;color:var(--r);font-family:var(--fm);font-size:.85rem;padding:8px 12px;opacity:.8;animation:typing-blink 1.2s infinite}
+@keyframes typing-blink{0%,100%{opacity:.4}50%{opacity:1}}
+.drop-zone{border:1px dashed var(--border-bright);padding:20px;text-align:center;cursor:pointer;transition:all .25s ease;font-family:var(--fm);font-size:.85rem;margin-bottom:14px;background:rgba(255,32,32,.02)}
+.drop-zone.drag-over,.drop-zone:hover{border-color:var(--r);background:rgba(255,32,32,.06);box-shadow:0 0 40px var(--rg),inset 0 0 40px rgba(255,32,32,.03)}
+.drop-zone svg{width:36px;height:36px;opacity:.5;margin-bottom:10px;color:var(--r2)}.drop-zone p{opacity:.6;font-size:.8rem}
+.drop-zone .hint{font-size:.65rem;opacity:.3;margin-top:6px;font-family:var(--fm)}
+.file-list{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.file-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg);border:1px solid var(--border);font-family:var(--fm);font-size:.75rem}
+.file-item button{background:0 0;border:none;color:var(--r2);cursor:pointer;padding:4px;opacity:.6;font-size:1.1rem}
+.file-item button:hover{opacity:1;color:var(--r)}
+.model-selector{display:flex;flex-direction:column;gap:10px}
+.model-row{display:flex;gap:8px}
+.model-row input,.model-row select{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:10px 12px;font-family:var(--fm);font-size:.8rem}
+.model-row select option{background:var(--bg-elevated);color:var(--fg)}.model-row input{flex:2}
+.model-row input:focus,.model-row select:focus{outline:0;border-color:var(--r2);box-shadow:0 0 0 1px var(--rgs)}
+.model-row button{padding:10px 16px;background:0 0;border:1px solid var(--r2);color:var(--r);font-family:var(--fu);font-weight:600;font-size:.75rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em;transition:all .2s ease}
+.model-row button:hover{background:var(--r2);color:#fff;box-shadow:0 0 20px var(--rgs)}
+.model-saved{font-family:var(--fm);font-size:.65rem;opacity:.6;margin-top:4px;min-height:1em}
+.skills-list{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto}
+.skill-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg);border:1px solid var(--border);font-family:var(--fm);font-size:.75rem;transition:border-color .2s ease}
+.skill-item:hover{border-color:var(--r2)}
+.skill-name{font-family:var(--fu);font-weight:600;color:var(--fg)}.skill-desc{color:var(--fg-dim);font-size:.7rem;margin-top:2px}
+.skill-actions{display:flex;gap:6px}.skill-actions button{background:0 0;border:1px solid var(--border);color:var(--fg-dim);padding:4px 10px;font-family:var(--fm);font-size:.65rem;cursor:pointer;transition:all .2s ease}
+.skill-actions button:hover{border-color:var(--r);color:var(--r)}
+.add-skill-form{display:flex;flex-direction:column;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.add-skill-form input,.add-skill-form textarea{background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:10px 12px;font-family:var(--fm);font-size:.8rem}
+.add-skill-form textarea{min-height:70px;resize:vertical}
+.add-skill-form input:focus,.add-skill-form textarea:focus{outline:0;border-color:var(--r2);box-shadow:0 0 0 1px var(--rgs)}
+.add-skill-form button{padding:10px;background:0 0;border:1px solid var(--r2);color:var(--r);font-family:var(--fu);font-weight:600;font-size:.75rem;cursor:pointer;text-transform:uppercase;transition:all .2s ease}
+.add-skill-form button:hover{background:var(--r2);color:#fff}
+.voice-preset-form{display:flex;flex-direction:column;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.voice-preset-row{display:flex;gap:6px;align-items:center}
+.voice-preset-row input{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:8px 10px;font-family:var(--fm);font-size:.75rem}
+.voice-preset-row input:focus{outline:0;border-color:var(--r2);box-shadow:0 0 0 1px var(--rgs)}
+.voice-preset-row button{padding:8px 12px;background:0 0;border:1px solid var(--r2);color:var(--r);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.06em;transition:all .2s ease;white-space:nowrap}
+.voice-preset-row button:hover{background:var(--r2);color:#fff}
+.voice-preset-row button.load-preset{border-color:#2a4;color:#2a4}.voice-preset-row button.load-preset:hover{background:#2a4;color:#fff}
+.voice-preset-row button.del-preset{border-color:var(--border);color:var(--fg-dim)}.voice-preset-row button.del-preset:hover{border-color:var(--r);color:var(--r)}
+.voice-presets-list{display:flex;flex-direction:column;gap:4px;max-height:160px;overflow-y:auto;margin-top:8px}
+.voice-preset-item{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:var(--bg);border:1px solid var(--border);font-family:var(--fm);font-size:.7rem;transition:border-color .2s ease}
+.voice-preset-item:hover{border-color:var(--r2)}
+.voice-preset-item .preset-name{font-weight:600;color:var(--fg)}.voice-preset-item .preset-detail{color:var(--fg-dim);font-size:.6rem;margin-top:1px}
+.voice-preset-actions{display:flex;gap:4px}
+.token-grid{display:grid;grid-template-columns:1fr;gap:12px}
+.token-stat{text-align:center;padding:16px;background:var(--bg);border:1px solid var(--border);position:relative}
+.token-stat::after{content:'';position:absolute;top:-1px;left:30%;right:30%;height:1px;background:linear-gradient(90deg,transparent,var(--r2),transparent);opacity:.5}
+.token-value{font-family:var(--fu);font-size:2.2rem;font-weight:700;line-height:1;color:var(--r)}
+.token-label{font-family:var(--fm);font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--fg-dim);margin-top:8px}
+.token-bar{height:3px;background:var(--bg);border:1px solid var(--border);margin-top:14px;overflow:hidden}
+.token-bar-fill{height:100%;background:linear-gradient(90deg,var(--r2),var(--r));transition:width .5s ease;box-shadow:0 0 10px var(--rg)}
+.loading-bar{height:2px;background:0 0;overflow:hidden;position:fixed;top:0;left:0;right:0;z-index:1000;transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+.loading-bar.active{transform:scaleX(1)}
+.loading-bar-fill{height:100%;background:linear-gradient(90deg,transparent,var(--r),var(--r),transparent);animation:loading-move 1.2s ease-in-out infinite;box-shadow:0 0 20px var(--rgs)}
+@keyframes loading-move{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.proposal{align-self:flex-start;background:#0d0d14;border:1px solid var(--r2);max-width:90%;font-family:var(--fm);font-size:.8rem;margin-top:8px;box-shadow:0 0 30px rgba(255,32,32,.1)}
+.proposal-head{padding:12px 16px;border-bottom:1px solid var(--border)}
+.proposal-head .ptitle{font-weight:600;color:var(--r)}.proposal-head .pexp{color:var(--fg-dim);margin-top:6px;white-space:pre-wrap}
+.proposal-diff{padding:12px 16px;white-space:pre-wrap;overflow-x:auto;color:var(--fg);opacity:.85;max-height:240px;overflow-y:auto}
+.proposal-actions{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border)}
+.proposal-actions button{flex:1;padding:8px;font-family:var(--fu);font-weight:600;font-size:.8rem;cursor:pointer;border:none;text-transform:uppercase;letter-spacing:.08em;transition:all .2s ease}
+.proposal-actions .approve{background:var(--r2);color:#fff}.proposal-actions .approve:hover{background:var(--r);box-shadow:0 0 20px var(--rgs)}
+.proposal-actions .reject{background:0 0;border:1px solid var(--border);color:var(--fg-dim)}.proposal-actions .reject:hover{border-color:var(--r);color:var(--r)}
+footer{padding:14px 24px;border-top:1px solid var(--border);background:rgba(10,10,14,.95);backdrop-filter:blur(12px);position:relative;z-index:10}
+footer::before{content:'';position:absolute;top:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,var(--r) 20%,var(--r) 80%,transparent 100%);opacity:.3}
+.input-wrapper{display:flex;gap:10px;max-width:1200px;margin:0 auto;align-items:center}
+.input-wrapper>svg{width:22px;height:22px;opacity:.4;flex-shrink:0;color:var(--r2)}
+.input-wrapper input{flex:1;background:var(--bg-elevated);border:1px solid var(--border);color:var(--fg);padding:12px 16px;font-family:var(--fm);font-size:.95rem;transition:border-color .2s ease,box-shadow .2s ease}
+.input-wrapper input:focus{outline:0;border-color:var(--r2);box-shadow:0 0 0 1px var(--rgs),0 0 30px var(--rg)}
+.input-wrapper input::placeholder{color:var(--fg-dim);opacity:.4}
+.mic-btn,.send-btn{width:46px;height:46px;background:0 0;border:1px solid var(--r2);color:var(--r);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s ease}
+.mic-btn{width:44px;height:44px;border-color:var(--border);color:var(--fg-dim)}
+.mic-btn:hover{border-color:var(--fg);color:var(--fg)}
+.send-btn:hover{background:var(--r2);color:#fff;box-shadow:0 0 20px var(--rgs)}.send-btn:active{transform:scale(.96)}
+.send-btn:disabled{opacity:.3;cursor:not-allowed;border-color:var(--border);color:var(--fg-dim);box-shadow:none}
+.mic-btn.listening{background:rgba(204,0,0,.15);border-color:var(--r);color:var(--r);box-shadow:0 0 20px var(--rgs),inset 0 0 12px rgba(255,32,32,.2);animation:mic-pulse 1s ease-in-out infinite}
+.mic-btn.hotkey-hint::after{content:'(hold Shift)';position:absolute;bottom:-18px;font-size:.5rem;color:var(--fg-dim);opacity:.35;white-space:nowrap;font-family:var(--fm)}
+@keyframes mic-pulse{0%,100%{box-shadow:0 0 12px rgba(255,32,32,.4),inset 0 0 8px rgba(255,32,32,.15)}50%{box-shadow:0 0 28px rgba(255,32,32,.8),inset 0 0 16px rgba(255,32,32,.4)}}
+.voice-toggle-btn{width:44px;height:44px;flex-shrink:0;background:0 0;border:1px solid var(--border);color:var(--fg-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s ease;position:relative}
+.voice-toggle-btn:hover{border-color:var(--fg);color:var(--fg)}
+.voice-toggle-btn.on{color:var(--r);border-color:var(--r2);background:rgba(255,32,32,.08);box-shadow:0 0 16px var(--rgs)}
+.voice-toggle-btn.on:hover{box-shadow:0 0 24px var(--rgs)}
+.voice-toggle-btn .vlabel{position:absolute;bottom:-16px;font-size:.45rem;color:var(--fg-dim);opacity:.3;white-space:nowrap;font-family:var(--fm)}
+.terminate-btn{height:46px;padding:0 18px;background:rgba(204,0,0,.1);border:1px solid var(--r);color:var(--r);font-family:var(--fu);font-weight:700;font-size:.7rem;letter-spacing:.15em;cursor:pointer;box-shadow:0 0 16px var(--rg),inset 0 0 10px rgba(255,32,32,.1);animation:terminate-glow 1.8s ease-in-out infinite;transition:all .2s ease}
+.terminate-btn:hover{background:rgba(204,0,0,.25);color:#f66;transform:scale(1.03);box-shadow:0 0 30px var(--rgs),inset 0 0 16px rgba(255,32,32,.2)}
+.terminate-btn:active{transform:scale(.97)}
+@keyframes terminate-glow{0%,100%{box-shadow:0 0 12px rgba(255,32,32,.4),inset 0 0 8px rgba(255,32,32,.08)}50%{box-shadow:0 0 28px rgba(255,32,32,.7),inset 0 0 16px rgba(255,32,32,.15)}}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:0 0}::-webkit-scrollbar-thumb{background:var(--border-bright)}::-webkit-scrollbar-thumb:hover{background:var(--r2)}
+input[type=checkbox],input[type=range],select{accent-color:var(--r)}
+.mcp-status-dot{width:8px;height:8px;border-radius:0;display:inline-block;flex-shrink:0;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)}
+.mcp-status-dot.connected{background:#2a4;box-shadow:0 0 6px rgba(34,170,68,.5)}
+.mcp-status-dot.disconnected{background:var(--fg-dim);opacity:.4}
+.mcp-status-dot.connecting{background:#fa0;box-shadow:0 0 6px rgba(255,170,0,.5);animation:pulse .8s infinite}
+.mcp-status-dot.error{background:var(--r);box-shadow:0 0 6px rgba(255,32,32,.5)}
+.mcp-server-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg);border:1px solid var(--border);font-family:var(--fm);font-size:.75rem;transition:border-color .2s ease}
+.mcp-server-item:hover{border-color:var(--r2)}
+.mcp-server-info{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.mcp-server-name{font-weight:600;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mcp-server-type{color:var(--fg-dim);font-size:.6rem;opacity:.6}
+.mcp-toggle-btn{padding:4px 10px;font-family:var(--fm);font-size:.65rem;cursor:pointer;border:1px solid var(--border);background:0 0;color:var(--fg-dim);text-transform:uppercase;letter-spacing:.06em;transition:all .2s ease;white-space:nowrap}
+.mcp-toggle-btn:hover{border-color:var(--r);color:var(--r)}
+.mcp-toggle-btn.active{border-color:#2a4;color:#2a4}.mcp-toggle-btn.active:hover{background:#2a4;color:#fff}
+.mcp-toggle-btn:disabled{opacity:.3;cursor:not-allowed}
+.glow{box-shadow:0 0 30px var(--rg)}
+@keyframes fadeInOut{0%{opacity:0;transform:translateY(10px)}10%{opacity:1;transform:translateY(0)}70%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-10px)}}
+</style>
+</head>
+<body>
+<div class="loading-bar" id="loadingBar"><div class="loading-bar-fill"></div></div>
+<header>
+<div class="brand"><div class="ultron-logo"><svg viewBox="0 0 36 36" fill="none"><path d="M18 2 L34 10 L34 26 L18 34 L2 26 L2 10 Z" stroke="#f22" stroke-width=".8" fill="rgba(255,32,32,.06)"/><path d="M6 12 L12 8 L18 10 L24 8 L30 12" stroke="#f22" stroke-width=".6" opacity=".6"/><rect x="10" y="14" width="5" height="4" rx=".5" fill="#f22" opacity=".9"><animate attributeName="opacity" values=".9;.5;.9" dur="2s" repeatCount="indefinite"/></rect><rect x="21" y="14" width="5" height="4" rx=".5" fill="#f22" opacity=".9"><animate attributeName="opacity" values=".9;.5;.9" dur="2s" repeatCount="indefinite"/></rect><path d="M10 24 Q18 28 26 24" stroke="#f22" stroke-width=".8" fill="none" opacity=".5"/><line x1="8" y1="18" x2="8" y2="22" stroke="#f22" stroke-width=".5" opacity=".3"/><line x1="28" y1="18" x2="28" y2="22" stroke="#f22" stroke-width=".5" opacity=".3"/><path d="M18 10 L18 12" stroke="#f22" stroke-width=".4" opacity=".4"/><path d="M2 14 L6 14" stroke="#f22" stroke-width=".4" opacity=".3"/><path d="M30 14 L34 14" stroke="#f22" stroke-width=".4" opacity=".3"/></svg></div>Ultron<span>ULTRON</span></div>
+<div class="header-right"><div class="mock-badge" id="mockBadge" style="display:none">MOCK</div><div class="token-badge" id="tokenBadge">0 tokens</div><button class="terminal-btn" id="updateBtn" title="Check cloud for Ultron updates">UPDATE</button><button class="terminal-btn" id="terminalBtn" title="Launch Terminal Agent"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l6-6-6-6"/><path d="M12 19h8"/></svg>TERMINAL</button><div class="status-dot" id="statusDot"></div></div>
+</header>
+<main>
+<section class="panel chat-panel"><div class="panel-title">Conversation <small>chat with Ultron</small></div><div class="chat-log" id="chatLog"></div><div id="proposalContainer"></div>
+<div class="drop-zone" id="dropZone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:32px;height:32px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><p style="font-size:.8rem">Drop files here or click to select</p><p class="hint" style="font-size:.65rem">Accepts:.csv, .stl, .pdf, .txt, .json, .md, .py, images</p><div class="file-list" id="fileList"></div><input type="file" id="fileInput" multiple style="display:none" accept=".csv,.stl,.pdf,.txt,.json,.md,.py,.jpg,.jpeg,.png,.svg"></div>
+</section>
+<aside style="display:flex;flex-direction:column;gap:18px">
+<section class="panel"><div class="panel-title">AI Model <small>current</small></div><div id="currentModel" style="font-family:var(--fm);font-size:.8rem;padding:10px 12px;background:var(--bg);border:1px solid var(--border);margin-bottom:14px;word-break:break-all"><span style="opacity:.5">Loading…</span></div><div class="model-selector"><div class="model-row"><select id="modelProvider"><option value="openrouter">OpenRouter</option><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option></select><input type="text" id="modelName" placeholder="Model ID (e.g. google/gemma-2-27b-it:free)"><button type="button" id="saveModelBtn">Save</button></div><div class="model-row"><input type="password" id="apiKey" placeholder="API key (optional)"><button type="button" id="saveConfigBtn">Apply</button></div><div class="model-saved" id="modelSavedMsg"></div></div><div class="panel-title" style="margin-top:14px">Saved Models <small>click to activate</small></div><div class="skills-list" id="savedModelsList" style="max-height:180px"><div style="text-align:center;opacity:.4;padding:16px;font-family:var(--fm);font-size:.75rem">No saved models</div></div></section>
+<section class="panel"><div class="panel-title">Skills <small>loaded</small></div><div class="skills-list" id="skillsList"><div style="text-align:center;opacity:.4;padding:20px;font-family:var(--fm);font-size:.75rem">Loading…</div></div></section>
+<section class="panel"><div class="panel-title">MCP Servers <small id="mcpStatusSummary">0 connected</small></div><div id="mcpConnectionBar" style="display:flex;gap:8px;margin-bottom:10px;font-family:var(--fm);font-size:.65rem"><div style="flex:1;padding:6px 8px;background:var(--bg);border:1px solid var(--border);text-align:center"><div style="color:var(--r);font-size:1.1rem;font-weight:700" id="mcpActiveCount">0</div><div style="color:var(--fg-dim);opacity:.6">ACTIVE</div></div><div style="flex:1;padding:6px 8px;background:var(--bg);border:1px solid var(--border);text-align:center"><div style="color:var(--fg-dim);font-size:1.1rem;font-weight:700" id="mcpInactiveCount">0</div><div style="color:var(--fg-dim);opacity:.6">INACTIVE</div></div></div><div class="skills-list" id="mcpServersList"><div style="text-align:center;opacity:.4;padding:16px;font-family:var(--fm);font-size:.75rem">Loading…</div></div><div class="add-skill-form" style="margin-top:10px"><button type="button" id="mcpRefreshBtn" style="padding:8px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fm);font-size:.7rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em;transition:all .2s ease">Refresh Status</button></div></section>
+<section class="panel"><div class="panel-title">BioLab — Protein & DNA <small>all features</small></div>
+<!-- Tab bar -->
+<div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+  <button type="button" class="biolab-tab active" data-tab="protein" style="flex:1;padding:6px 8px;background:var(--r2);color:#fff;border:1px solid var(--r2);font-family:var(--fu);font-weight:700;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Protein</button>
+  <button type="button" class="biolab-tab" data-tab="dna" style="flex:1;padding:6px 8px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">DNA</button>
+  <button type="button" class="biolab-tab" data-tab="structure" style="flex:1;padding:6px 8px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Structure</button>
+  <button type="button" class="biolab-tab" data-tab="design" style="flex:1;padding:6px 8px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">AI Design</button>
+  <button type="button" class="biolab-tab" data-tab="nl" style="flex:1;padding:6px 8px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Natural</button>
+</div>
+
+<!-- Shared sequence input (kept for backwards compat: id=proteinSequence) -->
+<div class="biolab-pane active" data-pane="protein">
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <textarea id="proteinSequence" placeholder="Enter protein sequence (e.g., MKTLYFVAGVAV)... or FASTA" style="background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:10px 12px;font-family:var(--fm);font-size:.8rem;min-height:80px;resize:vertical" rows="3"></textarea>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="protein-lab-btn" data-action="analyze" style="padding:8px 14px;background:0 0;border:1px solid var(--r2);color:var(--r);font-family:var(--fu);font-weight:600;font-size:.7rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em;transition:all .2s ease">Analyze</button><button type="button" class="protein-lab-btn" data-action="analyze_with_biotite" style="padding:8px 10px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Biotite</button><button type="button" class="protein-lab-btn" data-action="properties" style="padding:8px 14px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.7rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Properties</button><button type="button" class="protein-lab-btn" data-action="motifs" style="padding:8px 14px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.7rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Motifs</button><input type="text" id="proteinLabMotif" placeholder="Custom motif regex (optional)" style="flex:1;min-width:140px;background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:8px 12px;font-family:var(--fm);font-size:.7rem"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><input type="text" id="proteinLabLigand" placeholder="Ligand SMILES (for docking)" style="flex:1;min-width:140px;background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:8px 12px;font-family:var(--fm);font-size:.7rem"><button type="button" class="protein-lab-btn" data-action="dock" style="padding:8px 14px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.7rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Dock</button><button type="button" class="protein-lab-btn" data-action="fold" style="padding:8px 10px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Fold (Boltz-2)</button></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><input type="text" id="proteinLabSeq2" placeholder="Sequence 2 (for alignment)" style="flex:1;min-width:140px;background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:8px 12px;font-family:var(--fm);font-size:.7rem"><button type="button" class="protein-lab-btn" data-action="align" style="padding:8px 14px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.7rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Align</button><select id="proteinLabDesignGoal" style="background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:8px 10px;font-family:var(--fm);font-size:.7rem"><option value="stability">Goal:Stability</option><option value="expression">Goal:Expression</option><option value="binding">Goal:Binding</option></select><button type="button" class="protein-lab-btn" data-action="design" style="padding:8px 10px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Design Tips</button></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><input type="text" id="proteinLabMutation" placeholder="Mutations: A42V or p.A42V,K7R (1-indexed)" style="flex:1;min-width:140px;background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:8px 12px;font-family:var(--fm);font-size:.7rem"><button type="button" class="protein-lab-btn" data-action="mutate" style="padding:8px 14px;background:0 0;border:1px solid var(--r2);color:var(--r);font-family:var(--fu);font-weight:600;font-size:.7rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Mutate</button><button type="button" class="protein-lab-btn" data-action="hydrophobicity_profile" style="padding:8px 10px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Hydro Profile</button></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><select id="codonHost" style="background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:8px 10px;font-family:var(--fm);font-size:.7rem"><option value="e_coli">Host:E. coli</option><option value="human">Host:Human</option></select><button type="button" class="protein-lab-btn" data-action="codon_optimize" style="padding:8px 14px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.7rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Codon Optimize</button><button type="button" class="protein-lab-btn" data-action="batch_analyze" style="padding:8px 10px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Batch Analyze (FASTA)</button></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><select id="proteinLabVizStyle" style="background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:8px 10px;font-family:var(--fm);font-size:.7rem"><option value="cartoon">View:Cartoon</option><option value="surface">View:Surface</option><option value="stick">View:Stick</option><option value="sphere">View:Sphere</option></select><button type="button" class="protein-lab-btn" data-action="visualize" style="padding:8px 10px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Visualize</button><button type="button" class="protein-lab-btn" data-action="parse_fasta" style="padding:8px 10px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Parse FASTA</button><button type="button" class="protein-lab-btn" data-action="convert" style="padding:8px 10px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Convert</button><button type="button" class="protein-lab-btn" data-action="clean_sequence" style="padding:8px 10px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Clean</button></div>
+  </div>
+</div>
+
+<div class="biolab-pane" data-pane="dna" style="display:none">
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="font-family:var(--fm);font-size:.65rem;color:var(--fg-dim);text-transform:uppercase;letter-spacing:.1em">DNA Lab — bidirectional translation</div>
+    <textarea id="dnaLabProtein" placeholder="Protein sequence (for Protein → DNA) — e.g., MKTLL" style="background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:10px 12px;font-family:var(--fm);font-size:.8rem;min-height:60px;resize:vertical" rows="2"></textarea>
+    <button type="button" class="protein-lab-btn" data-action="protein_to_dna" data-dna-src="protein" style="padding:8px 14px;background:0 0;border:1px solid var(--r2);color:var(--r);font-family:var(--fu);font-weight:600;font-size:.7rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Protein → DNA</button>
+    <textarea id="dnaLabDna" placeholder="DNA sequence (for DNA → Protein) — e.g., ATGAAATAG ... A/C/G/T only" style="background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:10px 12px;font-family:var(--fm);font-size:.8rem;min-height:60px;resize:vertical" rows="2"></textarea>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="protein-lab-btn" data-action="dna_to_protein" data-dna-src="dna" style="padding:8px 14px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.7rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">DNA → Protein (6-frame)</button><button type="button" class="protein-lab-btn" data-action="convert" data-dna-src="convert" style="padding:8px 10px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Fasta ↔ Raw</button></div>
+    <div style="font-family:var(--fm);font-size:.6rem;color:var(--fg-dim);opacity:.6">Uses standard genetic code. First codon per AA (Protein→DNA). 6-frame ORF scan (DNA→Protein). For codon-optimized synthesis, pass via chat with prompt.</div>
+  </div>
+</div>
+
+<div class="biolab-pane" data-pane="structure" style="display:none">
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="font-family:var(--fm);font-size:.65rem;color:var(--fg-dim);text-transform:uppercase;letter-spacing:.1em">Structure — fetch, search, predict</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><input type="text" id="structureId" placeholder="PDB ID (1CRN) or UniProt (P69905)" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:8px 12px;font-family:var(--fm);font-size:.7rem"><select id="structureSource" style="background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:8px 10px;font-family:var(--fm);font-size:.7rem"><option value="pdb">RCSB PDB</option><option value="alphafold">AlphaFold DB</option></select><button type="button" class="protein-lab-btn" data-action="download_structure" style="padding:8px 10px;background:0 0;border:1px solid var(--r2);color:var(--r);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Download</button></div>
+    <div style="display:flex;gap:8px"><input type="text" id="structureQuery" placeholder="Search query: e.g., insulin receptor kinase" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:8px 12px;font-family:var(--fm);font-size:.7rem"><button type="button" class="protein-lab-btn" data-action="search_structure" style="padding:8px 14px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.7rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Search</button></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><input type="text" id="structureTopic" placeholder="Research topic: e.g., protein folding 2024" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:8px 12px;font-family:var(--fm);font-size:.7rem"><button type="button" class="protein-lab-btn" data-action="research_topic" style="padding:8px 10px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Research</button></div>
+    <div style="font-family:var(--fm);font-size:.6rem;color:var(--fg-dim);opacity:.6">Download saves to output/structures/. Search uses RCSB full-text. Research uses Firecrawl.</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px"><input type="text" id="boltzSeq" placeholder="Boltz: sequence for fold / protein_sequences (comma sep for multimer)" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:8px 12px;font-family:var(--fm);font-size:.7rem"><select id="boltzTask" style="background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:8px 10px;font-family:var(--fm);font-size:.7rem"><option value="fold">Boltz: Fold</option><option value="multimer">Multimer</option><option value="ligand">Ligand + affinity</option><option value="dna_protein">DNA-Protein</option></select><button type="button" id="boltzRunBtn" style="padding:8px 12px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Run Boltz</button></div>
+    <div style="display:flex;gap:8px;margin-top:2px"><input type="text" id="boltzLigand" placeholder="Ligand SMILES / CCD (for ligand task)" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:8px 12px;font-family:var(--fm);font-size:.7rem"><input type="text" id="boltzDna" placeholder="DNA seqs (for dna_protein, comma sep)" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:8px 12px;font-family:var(--fm);font-size:.7rem"></div>
+  </div>
+</div>
+
+<div class="biolab-pane" data-pane="design" style="display:none">
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="font-family:var(--fm);font-size:.65rem;color:var(--fg-dim);text-transform:uppercase;letter-spacing:.1em">AI Design — Evo2 / Proto-Language / Proto-Tools</div>
+    <textarea id="designPrompt" placeholder="Design prompt: e.g., Design a protein that binds ATP and is thermostable" style="background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:10px 12px;font-family:var(--fm);font-size:.8rem;min-height:60px;resize:vertical" rows="2"></textarea>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="protein-lab-btn" data-action="design_from_text" style="padding:8px 10px;background:0 0;border:1px solid var(--r2);color:var(--r);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Evo2: Design from Text</button><button type="button" class="protein-lab-btn" data-action="design_from_proto_language" style="padding:8px 10px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Proto-Lang</button></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><select id="protoBridgeAction" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:8px 10px;font-family:var(--fm);font-size:.7rem"><option value="predict">Proto-Tools: Predict</option><option value="score">Proto-Tools: Score</option><option value="design">Proto-Tools: Design</option><option value="compare">Proto-Tools: Compare</option></select><button type="button" class="protein-lab-btn" data-action="proto_tools_bridge" style="padding:8px 10px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fu);font-weight:600;font-size:.65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Run Bridge</button></div>
+    <input type="text" id="protoBridgeExtra" placeholder="Extra: PDB file path (for score/compare) or goal (for design)" style="background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:8px 12px;font-family:var(--fm);font-size:.7rem">
+    <div style="font-family:var(--fm);font-size:.6rem;color:var(--fg-dim);opacity:.6">Evo2 / ProteinMPNN / RFdiffusion need their Python deps. Proto-Tools bridge falls back to local heuristics when unavailable.</div>
+  </div>
+</div>
+
+<div class="biolab-pane" data-pane="nl" style="display:none">
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="font-family:var(--fm);font-size:.65rem;color:var(--fg-dim);text-transform:uppercase;letter-spacing:.1em">Natural Language — describe what you want</div>
+    <textarea id="nlPrompt" placeholder="Examples:&#10;Design a protein that binds ATP&#10;Download and analyze the structure of insulin&#10;Search for structures of kinase proteins&#10;Research protein folding mechanisms&#10;Get the PDB structure for 1CRN" style="background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:10px 12px;font-family:var(--fm);font-size:.8rem;min-height:90px;resize:vertical" rows="3"></textarea>
+    <button type="button" class="protein-lab-btn" data-action="natural_language" style="padding:10px 14px;background:0 0;border:1px solid var(--r2);color:var(--r);font-family:var(--fu);font-weight:600;font-size:.7rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Parse & Execute</button>
+    <div style="font-family:var(--fm);font-size:.6rem;color:var(--fg-dim);opacity:.6">Parses intent (design / download / search / research) via regex + confidence score, then executes automatically. Try it in chat too: just type the prompt.</div>
+    <button type="button" class="protein-lab-btn" data-action="help" style="padding:6px 10px;background:0 0;border:1px solid var(--border);color:var(--fg-dim);font-family:var(--fm);font-size:.65rem;cursor:pointer;opacity:.7">Show Help</button>
+  </div>
+</div>
+
+<div style="margin-top:12px;padding:12px;background:var(--bg);border:1px solid var(--border);max-height:320px;overflow-y:auto"><div style="font-family:var(--fm);font-size:.7rem;color:var(--r);margin-bottom:8px">Results: <span id="biolabStatus" style="color:var(--fg-dim);font-size:.6rem;opacity:.6"></span></div><pre id="proteinLabResults" style="font-family:var(--fm);font-size:.65rem;color:var(--fg);white-space:pre-wrap;word-wrap:break-word;margin:0">No results yet. Pick a tab, enter inputs, and run an action. All 20+ Protein & DNA Lab actions are wired via /api/protein-lab/run, /api/dna-lab/run and /api/boltz/run.</pre></div></section>
+<section class="panel"><div class="panel-title">Token Usage <small>session</small></div><div class="token-grid"><div class="token-stat"><div class="token-value" id="tokensTotal" style="font-size:1.8rem">0</div><div class="token-label">Total</div><div class="token-bar"><div class="token-bar-fill" id="tokenBarFill" style="width:0%"></div></div></div></div></section>
+<section class="panel"><div class="panel-title">Voice <small>speak + listen</small></div><label style="display:flex;justify-content:space-between;align-items:center;font-family:var(--fm);font-size:.75rem;padding:8px 0"><span>Enable voice</span><input type="checkbox" id="voiceEnabled" style="width:18px;height:18px"></label><div class="model-row" style="margin-top:8px"><select id="voiceEngine"><option value="edge">Edge (online, neural)</option><option value="sapi">Windows (offline)</option></select></div><div class="model-row" style="margin-top:8px"><select id="voiceName" style="flex:1"><option value="">Loading voices…</option></select></div><div style="font-family:var(--fm);font-size:.7rem;color:var(--fg-dim);margin-top:12px;display:flex;justify-content:space-between"><span>Rate</span><span id="voiceRateVal">-2</span></div><input type="range" id="voiceRate" min="-10" max="10" value="-2" style="width:100%"><div style="font-family:var(--fm);font-size:.7rem;color:var(--fg-dim);margin-top:10px;display:flex;justify-content:space-between"><span>Volume</span><span id="voiceVolVal">100</span></div><input type="range" id="voiceVolume" min="0" max="100" value="100" style="width:100%"><div class="model-row" style="margin-top:14px"><button type="button" id="voicePreviewBtn">Preview</button><button type="button" id="voiceTestBtn" style="border-color:#2a4;color:#2a4">Test</button><button type="button" id="voiceSaveBtn">Save</button></div><div class="model-saved" id="voiceSavedMsg"></div><div style="font-family:var(--fm);font-size:.6rem;color:var(--fg-dim);opacity:.5;margin-top:10px;line-height:1.5">Hold <b style="color:var(--r)">Shift</b> to record via mic (browser speech-to-text).<br>Release to auto-send. Click the mic icon to toggle on/off.</div><div class="panel-title" style="margin-top:16px;margin-bottom:8px">Custom Voices <small>saved presets</small></div><div class="voice-presets-list" id="voicePresetsList"><div style="text-align:center;opacity:.4;padding:12px;font-family:var(--fm);font-size:.7rem">No saved voices</div></div><div class="voice-preset-form"><div class="voice-preset-row"><input type="text" id="voicePresetName" placeholder="Name this voice preset..." maxlength="30"><button type="button" id="saveVoicePresetBtn">Save</button></div></div></section>
+</aside>
+</main>
+<footer><div class="input-wrapper"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg><input type="text" id="chatInput" placeholder="Type a message...  or  hold Shift to speak" autocomplete="off" spellcheck="false"><button class="mic-btn hotkey-hint" id="micBtn" aria-label="Speak" title="Hold Shift to record, release to send"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg></button><button class="voice-toggle-btn" id="voiceToggleBtn" aria-label="Toggle AI voice" title="Toggle AI voice output (TTS)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg><span class="vlabel">voice</span></button><button class="send-btn" id="sendBtn" aria-label="Send"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></button><button class="terminate-btn" id="terminateBtn" title="Terminate Ultron">TERMINATE</button></div></footer>
+<script>
+const $=id=>document.getElementById(id),ael=(e,t,f)=>e.addEventListener(t,f),ce=t=>document.createElement(t),qs=s=>document.querySelector(s),qsa=s=>document.querySelectorAll(s);
+
+const state={files:[],skills:[],totalTokens:0,busy:false,lastMsgCount:0,lastAnswer:null};
+const $=id=>document.getElementById(id);
+const dropZone=$('dropZone'),fileInput=$('fileInput'),fileList=$('fileList'),modelProvider=$('modelProvider'),modelName=$('modelName'),apiKey=$('apiKey'),saveModelBtn=$('saveModelBtn'),saveConfigBtn=$('saveConfigBtn'),modelSavedMsg=$('modelSavedMsg'),skillsList=$('skillsList'),tokensTotal=$('tokensTotal'),tokenBarFill=$('tokenBarFill'),loadingBar=$('loadingBar'),statusDot=$('statusDot'),chatInput=$('chatInput'),sendBtn=$('sendBtn'),tokenBadge=$('tokenBadge'),mockBadge=$('mockBadge'),chatLog=$('chatLog');
+function showLoading(){loadingBar.classList.add('active')}function hideLoading(){loadingBar.classList.remove('active')}
+function setBusy(b){state.busy=b;statusDot.classList.toggle('busy',b);statusDot.classList.remove('error');sendBtn.disabled=b;chatInput.disabled=b}
+function setError(){statusDot.classList.add('error');statusDot.classList.remove('busy')}
+function updateTokens(t){state.totalTokens=t||0;tokensTotal.textContent=state.totalTokens.toLocaleString();tokenBadge.textContent=state.totalTokens.toLocaleString()+' tokens';tokenBarFill.style.width=Math.min(100,state.totalTokens/1000)+'%'}
+function renderMessages(msgs){chatLog.innerHTML='';(msgs||[]).forEach(m=>{const d=document.createElement('div');d.className='msg '+(m.role==='user'?'user':'assistant');d.textContent=m.text!=null?m.text:(m.content!=null?m.content:'');chatLog.appendChild(d)});chatLog.scrollTop=chatLog.scrollHeight}
+function showTyping(){removeTyping();const t=document.createElement('div');t.className='typing';t.id='typingIndicator';t.textContent='Ultron is thinking…';chatLog.appendChild(t);chatLog.scrollTop=chatLog.scrollHeight}
+function removeTyping(){const t=$('typingIndicator');if(t)t.remove()}
+const proposalContainer=$('proposalContainer');let activeProposalId=null;
+function renderProposal(p,diff){if(activeProposalId===p.id)return;activeProposalId=p.id;proposalContainer.innerHTML='';const w=document.createElement('div');w.className='proposal';w.innerHTML=`<div class="proposal-head"><div class="ptitle">Proposal ${esc(p.id)} — ${esc(p.title||'')}</div><div class="pexp">${esc(p.explanation||'Awaiting your review.')}</div></div><div class="proposal-diff">${esc(diff||'')}</div><div class="proposal-actions"><button class="approve" data-pid="${esc(p.id)}">Approve</button><button class="reject" data-pid="${esc(p.id)}">Reject</button></div>`;w.querySelector('.approve').addEventListener('click',()=>reviewProposal(p.id,'approve'));w.querySelector('.reject').addEventListener('click',()=>reviewProposal(p.id,'reject'));proposalContainer.appendChild(w);chatLog.scrollTop=chatLog.scrollHeight}
+function clearProposal(){activeProposalId=null;proposalContainer.innerHTML=''}
+async function reviewProposal(pid,decision){const btn=proposalContainer.querySelector('button');if(btn)btn.disabled=true;try{const r=await fetch('/api/review/'+pid,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({decision})});const d=await r.json();if(d.ok){clearProposal();pollState()}else{console.error(d.error);if(btn)btn.disabled=false}}catch(e){console.error('Review error:',e);if(btn)btn.disabled=false}}
+let polling=false;
+async function pollState(){if(polling)return;polling=true;try{const r=await fetch('/api/state');const d=await r.json();mockBadge.style.display=d.mock?'block':'none';if(d.total_tokens!=null)updateTokens(d.total_tokens);if(d.state==='thinking'){setBusy(true);showTyping()}else{removeTyping()}if(d.state==='error'){setError();setBusy(false)}if(d.state==='done'||d.state==='idle'){setBusy(false);statusDot.classList.remove('error')}if(d.messages&&d.messages.length!==state.lastMsgCount){const prev=state.lastMsgCount;state.lastMsgCount=d.messages.length;renderMessages(d.messages);if(d.messages.length>initialMsgCount&&currentVoiceSettings&&currentVoiceSettings.enabled){const last=d.messages[d.messages.length-1];if(last.role==='assistant'&&last.text)speakViaBrowser(last.text)}}if(d.answer!=null&&d.answer!==state.lastAnswer){state.lastAnswer=d.answer;pollState();return}if(d.state==='awaiting'&&d.proposal){if(activeProposalId!==d.proposal.id)renderProposal(d.proposal,d.diff);state.busy=true;sendBtn.disabled=true;chatInput.disabled=true;statusDot.classList.remove('busy','error')}else if(d.state!=='awaiting')clearProposal()}catch(e){console.error('State poll error:',e)}finally{polling=false}}
+ael(dropZone,'click',e=>{if(e.target.closest('.file-item'))return;fileInput.click()});
+ael(dropZone,'dragover',e=>{e.preventDefault();dropZone.classList.add('drag-over')});
+ael(dropZone,'dragleave',()=>dropZone.classList.remove('drag-over'));
+ael(dropZone,'drop',e=>{e.preventDefault();dropZone.classList.remove('drag-over');handleFiles(e.dataTransfer.files)});
+ael(fileInput,'change',e=>handleFiles(e.target.files));
+function handleFiles(files){[...files].forEach(f=>{if(state.files.some(x=>x.name===f.name&&x.size===f.size))return;state.files.push(f)});renderFileList()}
+function renderFileList(){fileList.innerHTML=state.files.map((f,i)=>`<div class="file-item"><span>${esc(f.name)} (${(f.size/1024).toFixed(1)} KB)</span><button onclick="removeFile(${i})" title="Remove">×</button></div>`).join('')}
+window.removeFile=i=>{state.files.splice(i,1);renderFileList()};
+const currentModel=$('currentModel'),savedModelsList=$('savedModelsList');
+async function loadCurrentModel(){try{const r=await fetch('/api/models');const d=await r.json();const models=d.models||[];if(!models.length){const s=getSavedModels();currentModel.innerHTML=s.length?`<span style="opacity:.5">${esc(s[s.length-1].provider)} / ${esc(s[s.length-1].name)}</span> <span style="opacity:.4">(not applied)</span>`:'<span style="opacity:.5">No model configured (MOCK mode)</span>'}else{const m=models[0];currentModel.innerHTML=`<span style="opacity:.6">${esc(m.provider)}</span> / <span style="color:#f22">${esc(m.name)}</span>`}}catch(e){currentModel.innerHTML='<span style="opacity:.5">Unable to load</span>'}}
+function getSavedModels(){try{return JSON.parse(localStorage.getItem('agent_models')||'[]')}catch{return[]}}
+function setSavedModels(l){localStorage.setItem('agent_models',JSON.stringify(l));renderSavedModels()}
+function renderSavedModels(){const l=getSavedModels();if(!l.length){savedModelsList.innerHTML='<div style="text-align:center;opacity:.4;padding:16px;font-family:var(--fm);font-size:.75rem">No saved models</div>';return}savedModelsList.innerHTML=l.map((m,i)=>`<div class="skill-item"><div><div class="skill-name">${esc(m.name)}</div><div class="skill-desc">${esc(m.provider)}</div></div><div class="skill-actions"><button onclick="activateSaved(${i})">Use</button><button onclick="removeSaved(${i})">×</button></div></div>`).join('')}
+window.activateSaved=async i=>{const l=getSavedModels();const m=l[i];if(!m)return;await sendConfig(m.provider,m.name,null,false)};
+window.removeSaved=i=>{const l=getSavedModels();l.splice(i,1);setSavedModels(l)};
+ael(saveModelBtn,'click',()=>{const p=modelProvider.value,n=modelName.value.trim();if(!n){modelSavedMsg.textContent='Model ID required';modelSavedMsg.style.color='#c00';return}sendConfig(p,n,null,true)});
+ael(saveConfigBtn,'click',()=>{const p=modelProvider.value,n=modelName.value.trim(),k=apiKey.value.trim();if(!n){modelSavedMsg.textContent='Model ID required';modelSavedMsg.style.color='#c00';return}sendConfig(p,n,k,true)});
+async function sendConfig(provider,model,key,remember){try{const r=await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({provider,model,api_key:key})});const d=await r.json();if(d.ok){if(remember){const l=getSavedModels().filter(m=>!(m.provider===provider&&m.name===model));l.push({provider,name:model});setSavedModels(l)}modelSavedMsg.textContent=`Saved:${provider} / ${model}`;modelSavedMsg.style.color='#2a4';apiKey.value='';setTimeout(()=>{modelSavedMsg.textContent=''},3000);await loadCurrentModel()}else{modelSavedMsg.textContent=d.error||'Save failed';modelSavedMsg.style.color='#c00'}}catch(e){modelSavedMsg.textContent='Network error';modelSavedMsg.style.color='#c00'}}
+async function loadSkills(){try{const r=await fetch('/api/skills');const d=await r.json();state.skills=d.skills||d||[];renderSkills()}catch(e){skillsList.innerHTML='<div style="text-align:center;opacity:.4;padding:20px;font-family:var(--fm);font-size:.75rem">Failed to load</div>'}}
+function renderSkills(){if(!state.skills||!state.skills.length){skillsList.innerHTML='<div style="text-align:center;opacity:.4;padding:20px;font-family:var(--fm);font-size:.75rem">No skills loaded</div>';return}skillsList.innerHTML=state.skills.map(s=>`<div class="skill-item"><div><div class="skill-name">${esc(s.name)}</div><div class="skill-desc">${esc(s.description||'')}</div></div></div>`).join('')}
+const mcpServersList=$('mcpServersList'),mcpStatusSummary=$('mcpStatusSummary'),mcpActiveCount=$('mcpActiveCount'),mcpInactiveCount=$('mcpInactiveCount'),mcpRefreshBtn=$('mcpRefreshBtn');
+async function loadMCPServers(){try{const r=await fetch('/api/mcp/servers');const d=await r.json();renderMCPServers(d.servers||[])}catch(e){mcpServersList.innerHTML='<div style="text-align:center;opacity:.4;padding:16px;font-family:var(--fm);font-size:.75rem">Failed to load MCP servers</div>'}}
+function renderMCPServers(servers){if(!servers||!servers.length){mcpServersList.innerHTML='<div style="text-align:center;opacity:.4;padding:16px;font-family:var(--fm);font-size:.75rem">No MCP servers configured</div>';mcpStatusSummary.textContent='0 configured';mcpActiveCount.textContent='0';mcpInactiveCount.textContent='0';return}const a=servers.filter(s=>s.status==='connected').length;mcpStatusSummary.textContent=a+' connected';mcpActiveCount.textContent=a;mcpInactiveCount.textContent=servers.length-a;mcpServersList.innerHTML=servers.map(s=>{const sc=s.status,ic=s.status==='connected'||s.status==='disconnected'||s.status==='error',bl=s.status==='connected'?'Disconnect':'Connect',bc=s.status==='connected'?'active':'';return `<div class="mcp-server-item"><div class="mcp-server-info"><span class="mcp-status-dot ${sc}" title="${esc(s.status)}"></span><div><div class="mcp-server-name">${esc(s.id)}</div><div class="mcp-server-type">${esc(s.type||'local')} · ${esc(s.status)}</div></div></div>${ic?`<button class="mcp-toggle-btn ${bc}" onclick="toggleMCPServer('${esc(s.id)}')" ${s.status==='connecting'?'disabled':''}>${bl}</button>`:`<span class="mcp-toggle-btn" style="opacity:.3;cursor:default">${esc(s.status)}</span>`}</div>`}).join('')}
+async function toggleMCPServer(id){try{const items=mcpServersList.querySelectorAll('.mcp-server-item');items.forEach(item=>{const n=item.querySelector('.mcp-server-name');if(n&&n.textContent===id){const d=item.querySelector('.mcp-status-dot'),b=item.querySelector('.mcp-toggle-btn'),t=item.querySelector('.mcp-server-type');if(d)d.className='mcp-status-dot connecting';if(b){b.disabled=true;b.textContent='...'}if(t)t.textContent=t.textContent.replace(/(local\|remote) · .*/,'$1 · connecting')}});const r=await fetch('/api/mcp/toggle',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({server_id:id})});const d=await r.json();if(!d.success&&d.error)console.error('MCP toggle error:',d.error);await loadMCPServers()}catch(e){console.error('MCP toggle error:',e);await loadMCPServers()}}
+ael(mcpRefreshBtn,'click',loadMCPServers);
+// BioLab tab switching
+ document.querySelectorAll('.biolab-tab').forEach(tab=>{ael(tab,'click',()=>{document.querySelectorAll('.biolab-tab').forEach(t=>{t.classList.remove('active');t.style.background='0 0';t.style.color='var(--fg-dim)';t.style.borderColor='var(--border)'});tab.classList.add('active');tab.style.background='var(--r2)';tab.style.color='#fff';tab.style.borderColor='var(--r2)';const target=tab.dataset.tab;document.querySelectorAll('.biolab-pane').forEach(p=>p.style.display=p.dataset.pane===target?'block':'none')})});
+const proteinSequence=$('proteinSequence'),proteinLabResults=$('proteinLabResults'),proteinLabLigand=$('proteinLabLigand'),proteinLabSeq2=$('proteinLabSeq2'),proteinLabDesignGoal=$('proteinLabDesignGoal'),proteinLabVizStyle=$('proteinLabVizStyle');
+const biolabStatus=$('biolabStatus');
+function setBiolabStatus(t){if(biolabStatus) biolabStatus.textContent=t||''}
+async function runProteinLab(action, extra){
+  const btns=document.querySelectorAll('.protein-lab-btn');
+  // Build body generically: start from main protein sequence textarea as fallback
+  let body={action};
+  let sourceLabel='protein-lab';
+  const mainSeq=(proteinSequence?proteinSequence.value.trim():'');
+  try{
+    if(['protein_to_dna','dna_to_protein'].includes(action)){
+      sourceLabel='dna-lab';
+      if(action==='protein_to_dna'){
+        const v=document.getElementById('dnaLabProtein');
+        const seq=(v&&v.value.trim())||mainSeq;
+        if(!seq) return showProteinLabError('Enter a protein sequence for Protein → DNA');
+        body.protein_sequence=seq; body.sequence=seq;
+      } else {
+        const v=document.getElementById('dnaLabDna');
+        const seq=(v&&v.value.trim())||mainSeq;
+        if(!seq) return showProteinLabError('Enter a DNA sequence (A/C/G/T) for DNA → Protein');
+        body.dna_sequence=seq; body.sequence=seq;
+      }
+    } else if(action==='download_structure'){
+      const idEl=document.getElementById('structureId');
+      const srcEl=document.getElementById('structureSource');
+      const ident=idEl? idEl.value.trim(): mainSeq;
+      if(!ident) return showProteinLabError('Enter a PDB ID or UniProt ID to download');
+      body.identifier=ident; body.source=srcEl?srcEl.value:'pdb';
+    } else if(action==='search_structure'){
+      const qEl=document.getElementById('structureQuery');
+      const q=qEl? qEl.value.trim(): mainSeq;
+      if(!q) return showProteinLabError('Enter a search query (e.g., insulin kinase)');
+      body.query=q; body.limit=10;
+    } else if(action==='research_topic'){
+      const tEl=document.getElementById('structureTopic');
+      const t=tEl? tEl.value.trim(): mainSeq;
+      if(!t) return showProteinLabError('Enter a research topic');
+      body.topic=t; body.query=t;
+    } else if(action==='natural_language'){
+      const nEl=document.getElementById('nlPrompt');
+      const pr=nEl? nEl.value.trim(): mainSeq;
+      if(!pr) return showProteinLabError('Enter a natural language prompt');
+      body.prompt=pr;
+    } else if(action==='design_from_text'){
+      const dEl=document.getElementById('designPrompt');
+      const pr=dEl? dEl.value.trim(): mainSeq;
+      if(!pr) return showProteinLabError('Enter a design prompt');
+      body.prompt=pr;
+    } else if(action==='design_from_proto_language'){
+      const dEl=document.getElementById('designPrompt');
+      const pr=dEl? dEl.value.trim(): mainSeq;
+      if(!pr) return showProteinLabError('Enter a design prompt');
+      body.prompt=pr;
+    } else if(action==='proto_tools_bridge'){
+      const sel=document.getElementById('protoBridgeAction');
+      const extraEl=document.getElementById('protoBridgeExtra');
+      const sub=sel? sel.value: 'predict';
+      body.action='proto_tools_bridge';
+      body.subaction=sub;
+      // expose as kwargs the bridge expects
+      const seq=mainSeq;
+      if(seq) body.sequence=seq;
+      if(extraEl && extraEl.value.trim()){
+        if(sub==='score' || sub==='compare') body.pdb_file=extraEl.value.trim();
+        else if(sub==='design') body.goal=extraEl.value.trim();
+      } else if(sub==='design'){
+        body.goal=(proteinLabDesignGoal?proteinLabDesignGoal.value:'stability');
+      }
+      // also pass the subaction as two keys for compat
+      body.bridge_action=sub;
+      if(sub==='predict') body.predictor=extraEl? extraEl.value.trim() : '';
+    } else if(action==='visualize'){
+      body.style=proteinLabVizStyle?proteinLabVizStyle.value:'cartoon';
+      if(mainSeq.length>0 && mainSeq.includes('ATOM')) body.pdb_content=mainSeq; else body.pdb_content=mainSeq;
+      body.sequence=mainSeq;
+    } else if(action==='dock'){
+      const seq=mainSeq;
+      if(!seq) return showProteinLabError('Enter a protein sequence for docking');
+      body.sequence=seq; body.protein_sequence=seq;
+      body.ligand_smiles=proteinLabLigand?proteinLabLigand.value.trim():'';
+      if(!body.ligand_smiles) return showProteinLabError('Enter a ligand SMILES / CCD');
+    } else if(action==='align'){
+      const seq=mainSeq;
+      if(!seq) return showProteinLabError('Enter sequence 1 (main textarea)');
+      body.sequence1=seq; body.sequence=seq;
+      body.sequence2=proteinLabSeq2?proteinLabSeq2.value.trim():'';
+      if(!body.sequence2) return showProteinLabError('Enter sequence 2 for alignment');
+    } else if(action==='design'){
+      const seq=mainSeq;
+      if(!seq) return showProteinLabError('Enter a protein sequence for design tips');
+      body.sequence=seq;
+      body.goal=proteinLabDesignGoal?proteinLabDesignGoal.value:'stability';
+    } else if(action==='motifs'){
+      const seq=mainSeq;
+      if(!seq) return showProteinLabError('Enter a protein sequence for motif search');
+      body.sequence=seq;
+      const mEl=document.getElementById('proteinLabMotif');
+      if(mEl && mEl.value.trim()) body.motif=mEl.value.trim();
+    } else if(action==='parse_fasta'){
+      body.content=mainSeq;
+      if(!body.content) return showProteinLabError('Paste FASTA content in the main textarea');
+    } else if(action==='convert'){
+      const seq=mainSeq || (document.getElementById('dnaLabDna')? document.getElementById('dnaLabDna').value.trim():'');
+      if(!seq) return showProteinLabError('Enter a sequence for format conversion');
+      body.sequence=seq;
+      // keep defaults fasta->raw, but let user tweak via prompt if needed
+    } else if(action==='clean_sequence'){
+      const seq=mainSeq;
+      if(!seq) return showProteinLabError('Enter a sequence to clean');
+      body.sequence=seq;
+    } else if(action==='mutate'){
+      const seq=mainSeq;
+      if(!seq) return showProteinLabError('Enter a protein sequence for mutate');
+      body.sequence=seq;
+      const m=document.getElementById('proteinLabMutation');
+      if(m && m.value.trim()) body.mutation=m.value.trim();
+      else return showProteinLabError('Enter mutation(s), e.g. A42V or p.A42V,K7R');
+    } else if(action==='hydrophobicity_profile'){
+      const seq=mainSeq;
+      if(!seq) return showProteinLabError('Enter a protein sequence for hydrophobicity profile');
+      body.sequence=seq; body.window=9;
+    } else if(action==='codon_optimize'){
+      const seq=mainSeq;
+      if(!seq) return showProteinLabError('Enter a protein sequence for codon optimization');
+      body.protein_sequence=seq; body.sequence=seq;
+      const h=document.getElementById('codonHost');
+      body.host=h?h.value:'e_coli';
+    } else if(action==='batch_analyze'){
+      const fasta=mainSeq;
+      if(!fasta||!fasta.includes('>')) return showProteinLabError('Paste multi-FASTA (lines starting with >) into the sequence box for batch analyze');
+      body.content=fasta; body.fasta=fasta;
+    } else if(['analyze','analyze_with_biotite','properties','fold','help'].includes(action)){
+      const seq=mainSeq;
+      if(action!=='help' && !seq) return showProteinLabError('Enter a protein sequence for '+action);
+      if(seq) body.sequence=seq;
+    } else {
+      if(mainSeq) body.sequence=mainSeq;
+    }
+
+    proteinLabResults.textContent='Running '+action+'...';
+    setBiolabStatus('⏳ '+action+' via '+(sourceLabel==='dna-lab'?'DNA Lab':'Protein Lab'));
+    proteinLabResults.style.color='';
+    btns.forEach(b=>b.disabled=true);
+
+    // Choose endpoint
+    let url='/api/protein-lab/run';
+    if(sourceLabel==='dna-lab') url='/api/dna-lab/run';
+    // help / natural_language etc still go via protein-lab
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d=await r.json();
+    if(d.error) { showProteinLabError(d.error); setBiolabStatus('❌ error'); }
+    else { proteinLabResults.textContent=d.result||'No result returned'; setBiolabStatus('✅ '+action+' done'); proteinLabResults.style.color=''; }
+  }catch(e){showProteinLabError('Request failed: '+e.message); setBiolabStatus('❌ network');}finally{btns.forEach(b=>b.disabled=false)}
+}
+async function runBoltz(){
+  const seqEl=document.getElementById('boltzSeq');
+  const taskEl=document.getElementById('boltzTask');
+  const ligEl=document.getElementById('boltzLigand');
+  const dnaEl=document.getElementById('boltzDna');
+  const task=taskEl?taskEl.value:'fold';
+  const seqRaw=seqEl?seqEl.value.trim(): (proteinSequence?proteinSequence.value.trim():'');
+  if(!seqRaw) return showProteinLabError('Enter a sequence for Boltz (or fill Boltz seq field)');
+  const body={task};
+  if(task==='fold'){ body.sequence=seqRaw; body.protein_sequence=seqRaw; }
+  else if(task==='multimer'){
+    const parts=seqRaw.split(',').map(s=>s.trim()).filter(Boolean);
+    const dict={}; parts.forEach((s,i)=>dict[String.fromCharCode(65+i)]=s);
+    body.sequences=dict; body.protein_sequences=parts;
+  } else if(task==='ligand'){
+    body.protein_sequence=seqRaw; body.sequence=seqRaw;
+    const lig=ligEl?ligEl.value.trim():''; if(!lig) return showProteinLabError('Enter ligand SMILES/CCD for ligand task');
+    if(lig.length<=4) body.ligand_ccd=lig; else body.ligand_smiles=lig;
+    body.predict_affinity=true;
+    if(ligEl && ligEl.value.trim().length<=4) body.ligand_ccd=ligEl.value.trim();
+  } else if(task==='dna_protein'){
+    const parts=seqRaw.split(',').map(s=>s.trim()).filter(Boolean);
+    body.protein_sequences=parts;
+    const dnas=dnaEl? dnaEl.value.trim().split(',').map(s=>s.trim()).filter(Boolean):[];
+    if(!dnas.length) return showProteinLabError('Enter DNA sequences (comma separated) for dna_protein task');
+    body.dna_sequences=dnas;
+  }
+  try{
+    proteinLabResults.textContent='Running Boltz-2 task: '+task+' ... (may take minutes)';
+    setBiolabStatus('⏳ boltz: '+task);
+    const btns=document.querySelectorAll('.protein-lab-btn'); btns.forEach(b=>b.disabled=true);
+    const r=await fetch('/api/boltz/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d=await r.json();
+    if(d.error) { showProteinLabError(d.error); setBiolabStatus('❌ boltz error'); }
+    else { proteinLabResults.textContent=d.result||'No result'; setBiolabStatus('✅ boltz '+task+' done'); }
+    btns.forEach(b=>b.disabled=false);
+  }catch(e){showProteinLabError('Boltz request failed: '+e.message); setBiolabStatus('❌ boltz network')}
+}
+function showProteinLabError(msg){proteinLabResults.textContent='Error: '+msg;proteinLabResults.style.color='#f66';setBiolabStatus('❌ error');}
+document.querySelectorAll('.protein-lab-btn').forEach(btn=>{ael(btn,'click',()=>{const a=btn.dataset.action;if(a)runProteinLab(a)})});
+const boltzBtn=document.getElementById('boltzRunBtn'); if(boltzBtn) ael(boltzBtn,'click',runBoltz);
+ael(proteinSequence,'keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&e.ctrlKey){e.preventDefault();runProteinLab('analyze')}});
+async function sendMessage(){const text=chatInput.value.trim();if(!text||state.busy)return;chatInput.value='';state.lastAnswer=null;setBusy(true);showLoading();try{const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text,files:state.files.map(f=>f.name)})});const d=await r.json();if(d.error){appendError(d.error);setBusy(false)}}catch(e){console.error('Chat error:',e);appendError('Failed to reach the agent.');setBusy(false)}finally{hideLoading();state.files=[];renderFileList();pollState()}}
+function appendError(text){const d=document.createElement('div');d.className='msg error';d.textContent=text;chatLog.appendChild(d);chatLog.scrollTop=chatLog.scrollHeight}
+ael(sendBtn,'click',sendMessage);
+ael(chatInput,'keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage()}});
+$('terminateBtn').addEventListener('click',async()=>{if(!confirm('Terminate Ultron? This stops the server.'))return;try{await fetch('/api/terminate',{method:'POST'})}catch(e){}document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#f22;font-family:monospace">Ultron terminated.</div>'});
+$('terminalBtn').addEventListener('click',async()=>{try{const r=await fetch('/api/launch-terminal',{method:'POST'});const d=await r.json();if(d.ok){const m=document.createElement('div');m.style.cssText='position:fixed;top:20px;right:20px;padding:12px 20px;background:#0d0d14;border:1px solid #2a4;color:#2a4;font-family:var(--fm);font-size:.8rem;z-index:9999;animation:fadeInOut 3s forwards';m.textContent='Terminal launched!';document.body.appendChild(m);setTimeout(()=>m.remove(),3000)}else alert('Failed to launch terminal:'+(d.error||'Unknown error'))}catch(e){alert('Error launching terminal:'+e.message)}});
+function esc(s){if(s==null)return'';return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+const voiceEnabled=$('voiceEnabled'),voiceEngine=$('voiceEngine'),voiceName=$('voiceName'),voiceRate=$('voiceRate'),voiceVolume=$('voiceVolume'),voiceRateVal=$('voiceRateVal'),voiceVolVal=$('voiceVolVal'),voicePreviewBtn=$('voicePreviewBtn'),voiceSaveBtn=$('voiceSaveBtn'),voiceSavedMsg=$('voiceSavedMsg');
+let currentVoiceSettings={enabled:false,engine:'edge',name:'',rate:-2,volume:100};
+async function loadVoiceSettings(){try{const r=await fetch('/api/voice');const d=await r.json();currentVoiceSettings=d;voiceEnabled.checked=!!d.enabled;voiceEngine.value=d.engine||'edge';voiceRate.value=d.rate!=null?d.rate:-2;voiceVolume.value=d.volume!=null?d.volume:100;voiceRateVal.textContent=voiceRate.value;voiceVolVal.textContent=voiceVolume.value;await loadVoiceList(d.engine||'edge',d.name);updateVoiceToggleUI()}catch(e){console.error('Voice settings load error:',e)}}
+async function loadVoiceList(engine,sel){try{voiceName.innerHTML='<option value="">Loading voices…</option>';const r=await fetch('/api/voice/voices?engine='+encodeURIComponent(engine||'edge'));const d=await r.json();const v=d.voices||[];if(!v.length){voiceName.innerHTML='<option value="">No voices available</option>';return}voiceName.innerHTML=v.map(x=>`<option value="${esc(x.id)}">${esc(x.name||x.id)}${x.locale?' — '+esc(x.locale):''}</option>`).join('');if(sel)voiceName.value=sel;if(!voiceName.value&&v.length)voiceName.value=v[0].id}catch(e){voiceName.innerHTML='<option value="">Failed to load</option>'}}
+ael(voiceEngine,'change',()=>{loadVoiceList(voiceEngine.value,'')});
+ael(voiceRate,'input',()=>{voiceRateVal.textContent=voiceRate.value});
+ael(voiceVolume,'input',()=>{voiceVolVal.textContent=voiceVolume.value});
+function setVoiceMsg(t,ok){voiceSavedMsg.textContent=t;voiceSavedMsg.style.color=ok?'#2a4':'#c00';if(ok)setTimeout(()=>{voiceSavedMsg.textContent=''},3000)}
+const voicePresetsList=$('voicePresetsList'),voicePresetName=$('voicePresetName'),saveVoicePresetBtn=$('saveVoicePresetBtn');
+function getVoicePresets(){try{return JSON.parse(localStorage.getItem('agent_voice_presets')||'[]')}catch{return[]}}
+function setVoicePresets(l){localStorage.setItem('agent_voice_presets',JSON.stringify(l));renderVoicePresets()}
+function renderVoicePresets(){const l=getVoicePresets();if(!l.length){voicePresetsList.innerHTML='<div style="text-align:center;opacity:.4;padding:12px;font-family:var(--fm);font-size:.7rem">No saved voices</div>';return}voicePresetsList.innerHTML=l.map((p,i)=>`<div class="voice-preset-item"><div style="flex:1;min-width:0"><div class="preset-name">${esc(p.name)}</div><div class="preset-detail">${esc(p.engine)} / ${esc(p.voice_name||'default')} · R:${p.rate} V:${p.volume}</div></div><div class="voice-preset-actions"><button class="load-preset" onclick="loadVoicePreset(${i})" title="Load this voice preset">Load</button><button class="del-preset" onclick="deleteVoicePreset(${i})" title="Delete this preset">×</button></div></div>`).join('')}
+window.loadVoicePreset=function(i){const l=getVoicePresets(),p=l[i];if(!p)return;voiceEngine.value=p.engine||'edge';voiceName.value=p.voice_name||'';voiceRate.value=p.rate!=null?p.rate:-2;voiceVolume.value=p.volume!=null?p.volume:100;voiceRateVal.textContent=voiceRate.value;voiceVolVal.textContent=voiceVolume.value;voiceEnabled.checked=true;currentVoiceSettings.enabled=true;updateVoiceToggleUI();saveCurrentVoiceSettings('Loaded preset:'+p.name);if(p.voice_name&&!Array.from(voiceName.options).some(o=>o.value===p.voice_name))loadVoiceList(p.engine||'edge',p.voice_name)};
+window.deleteVoicePreset=function(i){const l=getVoicePresets();l.splice(i,1);setVoicePresets(l)};
+function saveCurrentVoiceSettings(msg){fetch('/api/voice',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({enabled:voiceEnabled.checked,engine:voiceEngine.value,name:voiceName.value,rate:parseInt(voiceRate.value,10),volume:parseInt(voiceVolume.value,10)})}).then(r=>r.json()).then(d=>{if(d.ok){currentVoiceSettings=d.settings;if(msg)setVoiceMsg(msg,true)}}).catch(e=>console.warn('Save voice settings error:',e))}
+ael(saveVoicePresetBtn,'click',()=>{const n=voicePresetName.value.trim();if(!n){setVoiceMsg('Enter a name for this preset',false);return}const p={name:n,engine:voiceEngine.value,voice_name:voiceName.value,rate:parseInt(voiceRate.value,10),volume:parseInt(voiceVolume.value,10)};const l=getVoicePresets().filter(x=>x.name!==n);l.push(p);setVoicePresets(l);voicePresetName.value='';setVoiceMsg('Preset "'+n+'" saved!',true)});
+ael(voicePresetName,'keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveVoicePresetBtn.click()}});
+ael(voiceSaveBtn,'click',async()=>{try{const r=await fetch('/api/voice',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({enabled:voiceEnabled.checked,engine:voiceEngine.value,name:voiceName.value,rate:parseInt(voiceRate.value,10),volume:parseInt(voiceVolume.value,10)})});const d=await r.json();if(d.ok){currentVoiceSettings=d.settings;setVoiceMsg('Voice settings saved.',true)}else setVoiceMsg(d.error||'Save failed',false)}catch(e){setVoiceMsg('Network error',false)}});
+const voiceTestBtn=$('voiceTestBtn');
+ael(voicePreviewBtn,'click',async()=>{voicePreviewBtn.disabled=true;setVoiceMsg('Speaking…',true);const t='Hello sir, I am Ultron, at your service.',e=voiceEngine.value,n=voiceName.value,rt=parseInt(voiceRate.value,10),v=parseInt(voiceVolume.value,10);try{const r=await fetch('/api/voice/speak',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:t,engine:e,name:n,rate:rt,volume:v})});if(!r.ok){setVoiceMsg('Preview failed',false);return}const b=await r.blob(),u=URL.createObjectURL(b),p=new Audio(u);p.volume=1;p.play().catch(x=>console.warn('Preview audio error:',x));p.onended=()=>{URL.revokeObjectURL(u);setVoiceMsg('',true)};p.onerror=()=>{URL.revokeObjectURL(u);setVoiceMsg('Preview error',false)}}catch(x){setVoiceMsg('Preview error',false)}finally{voicePreviewBtn.disabled=false}});
+ael(voiceTestBtn,'click',async()=>{voiceTestBtn.disabled=true;setVoiceMsg('Testing…',true);const t='Testing voice output. Can you hear me sir?',e=voiceEngine.value,n=voiceName.value,rt=parseInt(voiceRate.value,10),v=parseInt(voiceVolume.value,10);try{const r=await fetch('/api/voice/speak',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:t,engine:e,name:n,rate:rt,volume:v})});if(r.ok){const b=await r.blob(),u=URL.createObjectURL(b),p=new Audio(u);p.volume=1;await p.play();p.onended=()=>{URL.revokeObjectURL(u);setVoiceMsg('✓ Voice works!',true)};p.onerror=()=>{URL.revokeObjectURL(u);setVoiceMsg('Audio element failed',false)}}else{if(window.speechSynthesis){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);window.speechSynthesis.speak(u);setVoiceMsg('✓ SpeechSynthesis works!',true)}else setVoiceMsg('No TTS available',false)}}catch(x){if(window.speechSynthesis){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);window.speechSynthesis.speak(u);setVoiceMsg('✓ SpeechSynthesis fallback',true)}else setVoiceMsg('Test error:'+x.message,false)}finally{voiceTestBtn.disabled=false}});
+ael(voiceName,'change',()=>{if(recognition)recognition.lang=(voiceName.value||'').split('-').slice(0,2).join('-')||'en-US'});
+const voiceToggleBtn=$('voiceToggleBtn');
+function updateVoiceToggleUI(){const on=currentVoiceSettings.enabled;voiceToggleBtn.classList.toggle('on',on);voiceToggleBtn.title=on?'AI voice ON — click to mute':'AI voice OFF — click to enable'}
+ael(voiceToggleBtn,'click',async()=>{if(pendingAudio&&audioUnlocked){const p=pendingAudio;pendingAudio=null;p.play().catch(e=>console.warn('[Voice] Toggle play error:',e));return}unlockAudio();const ns=!currentVoiceSettings.enabled;currentVoiceSettings.enabled=ns;voiceEnabled.checked=ns;updateVoiceToggleUI();try{const r=await fetch('/api/voice',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({enabled:ns,engine:voiceEngine.value,name:voiceName.value,rate:parseInt(voiceRate.value,10),volume:parseInt(voiceVolume.value,10)})});const d=await r.json();if(d.ok){currentVoiceSettings=d.settings;voiceEnabled.checked=!!d.settings.enabled;updateVoiceToggleUI()}else{currentVoiceSettings.enabled=!ns;voiceEnabled.checked=!ns;updateVoiceToggleUI()}}catch(e){currentVoiceSettings.enabled=!ns;voiceEnabled.checked=!ns;updateVoiceToggleUI()}});
+ael(voiceEnabled,'change',()=>{currentVoiceSettings.enabled=voiceEnabled.checked;updateVoiceToggleUI()});
+let audioPlayer=null,audioUnlocked=false,pendingAudio=null,audioBlockedHint=null;
+function unlockAudio(){if(audioUnlocked)return;audioUnlocked=true;console.log('[Voice] Audio unlocked by user interaction');if(audioBlockedHint){audioBlockedHint.remove();audioBlockedHint=null}try{const ctx=new(window.AudioContext||window.webkitAudioContext);const buf=ctx.createBuffer(1,1,22050);const src=ctx.createBufferSource();src.buffer=buf;src.connect(ctx.destination);src.start();if(ctx.state==='suspended')ctx.resume()}catch(e){}if(pendingAudio){const p=pendingAudio;pendingAudio=null;console.log('[Voice] Playing queued audio');p.play().catch(e=>console.warn('[Voice] Deferred audio play failed:',e))}}
+ael(document,'click',unlockAudio,{once:true});ael(document,'keydown',unlockAudio,{once:true});ael(document,'touchstart',unlockAudio,{once:true});
+function speakViaSpeechSynthesis(text){if(!window.speechSynthesis)return false;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=.9;u.pitch=.8;u.volume=1;const v=window.speechSynthesis.getVoices();const pref=v.find(x=>x.name.includes('David')||x.name.includes('Mark')||x.name.includes('Google UK'));if(pref)u.voice=pref;window.speechSynthesis.speak(u);console.log('[Voice] Speaking via SpeechSynthesis:',text.substring(0,50));return true}
+function speakViaBrowser(text){if(!text||!currentVoiceSettings||!currentVoiceSettings.enabled)return;console.log('[Voice] speakViaBrowser called, text:',text.substring(0,50));if(audioPlayer&&!audioPlayer.paused&&!audioPlayer.ended){console.log('[Voice] Already speaking, skipping');return}if(!audioUnlocked){console.log('[Voice] Audio not unlocked, trying SpeechSynthesis fallback');if(speakViaSpeechSynthesis(text)){fetchAndQueueAudio(text);return}if(!audioBlockedHint){audioBlockedHint=document.createElement('div');audioBlockedHint.style.cssText='position:fixed;bottom:80px;right:24px;background:#1a0808;border:1px solid #f22;color:#f66;padding:10px 16px;font-family:monospace;font-size:.75rem;z-index:9999;box-shadow:0 0 30px rgba(255,32,32,.3);animation:fadeInOut 3s ease forwards';audioBlockedHint.textContent='Click anywhere to enable voice output';document.body.appendChild(audioBlockedHint);setTimeout(()=>{if(audioBlockedHint){audioBlockedHint.remove();audioBlockedHint=null}},4000)}return}fetchAndPlayAudio(text)}
+function fetchAudio(text,engine,name,rate,volume,callback){fetch('/api/voice/speak',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,engine,name,rate,volume})}).then(r=>{if(!r.ok)throw new Error('TTS request failed');return r.blob()}).then(blob=>callback(null,blob)).catch(e=>callback(e))}
+function fetchAndQueueAudio(text){const e=currentVoiceSettings.engine||'edge',n=currentVoiceSettings.name||'',r=currentVoiceSettings.rate!=null?currentVoiceSettings.rate:-2,v=currentVoiceSettings.volume!=null?currentVoiceSettings.volume:100;fetchAudio(text,e,n,r,v,err=>{if(err)return console.warn('[Voice] Queue audio error:',err);const u=URL.createObjectURL(blob);if(audioPlayer){audioPlayer.pause();audioPlayer.src=''}audioPlayer=new Audio(u);audioPlayer.volume=1;pendingAudio=audioPlayer;audioPlayer.onended=()=>URL.revokeObjectURL(u);audioPlayer.onerror=()=>URL.revokeObjectURL(u)})}
+function fetchAndPlayAudio(text){const e=currentVoiceSettings.engine||'edge',n=currentVoiceSettings.name||'',r=currentVoiceSettings.rate!=null?currentVoiceSettings.rate:-2,v=currentVoiceSettings.volume!=null?currentVoiceSettings.volume:100;fetchAudio(text,e,n,r,v,(err,blob)=>{if(err)return console.warn('[Voice] TTS fetch error:',err);console.log('[Voice] Got audio blob, playing...');const u=URL.createObjectURL(blob);if(audioPlayer){audioPlayer.pause();audioPlayer.src=''}audioPlayer=new Audio(u);audioPlayer.volume=1;const pp=audioPlayer.play();if(pp!==undefined)pp.then(()=>console.log('[Voice] Audio playback started')).catch(x=>{if(x.name==='NotAllowedError'){console.warn('[Voice] Autoplay blocked, will play on next interaction');pendingAudio=audioPlayer}else console.warn('[Voice] Audio play failed:',x)});audioPlayer.onended=()=>{console.log('[Voice] Playback ended');URL.revokeObjectURL(u)};audioPlayer.onerror=x=>{console.warn('[Voice] Audio error:',x);URL.revokeObjectURL(u)}})}
+const micBtn=$('micBtn');let recognition=null,listening=false,shiftHeld=false,autoSendAfterStop=false;
+function setupRecognition(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return null;const r=new SR();r.continuous=false;r.interimResults=true;r.lang=(currentVoiceSettings.name||'').split('-').slice(0,2).join('-')||'en-US';r.onresult=e=>{let t='';for(let i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript;chatInput.value=t};r.onerror=e=>{console.warn('Speech recognition error:',e.error);stopListening();if(e.error==='not-allowed')setVoiceMsg('Microphone permission denied.',false)};r.onend=()=>{if(listening){if(shiftHeld){try{recognition.start()}catch(_){}return}}stopListening()};return r}
+function startListening(opts){if(listening)return;if(!recognition)recognition=setupRecognition();if(!recognition){setVoiceMsg('Speech-to-text not supported in this browser.',false);return}try{recognition.start();listening=true;micBtn.classList.add('listening');autoSendAfterStop=opts&&opts.autoSend;micBtn.title='Listening… release Shift to send'}catch(e){console.warn(e)}}
+function stopListening(){const was=listening;if(was&&recognition)try{recognition.stop()}catch(_){}listening=false;shiftHeld=false;micBtn.classList.remove('listening');micBtn.title='Hold Shift to record, release to send';if(was&&autoSendAfterStop&&chatInput.value.trim())sendMessage();autoSendAfterStop=false}
+ael(document,'keydown',e=>{if(e.key==='Shift'&&!e.repeat){shiftHeld=true;if(document.activeElement===chatInput&&chatInput.value.trim())return;if(!listening&&!state.busy)startListening({autoSend:true})}});
+ael(document,'keyup',e=>{if(e.key==='Shift'){shiftHeld=false;if(listening)stopListening()}});
+ael(micBtn,'click',()=>{if(listening){autoSendAfterStop=false;if(recognition)try{recognition.stop()}catch(_){}stopListening()}else startListening({autoSend:false})});
+let initialMsgCount=999999,pageLoaded=false;
+// ===== Self-update (cloud) =====
+const updateBtn=$('updateBtn');let updateReady=null;
+async function checkForUpdates(interactive){if(!updateBtn)return;const orig='UPDATE';updateBtn.disabled=true;updateBtn.classList.remove('update-ready');updateBtn.textContent='CHECKING…';try{const r=await fetch('/api/update/check');const d=await r.json();if(!d.configured){updateBtn.textContent=orig;updateBtn.title='Self-update not configured (set ULTRON_REPO_URL)';return}if(!d.ok){updateBtn.textContent=orig;updateBtn.title=d.error||'Update check failed';return}
+if(d.update_available){updateReady=d;updateBtn.dataset.mode='install';updateBtn.classList.add('update-ready');updateBtn.textContent='INSTALL v'+d.latest_version;updateBtn.title='Version '+d.latest_version+' available ('+d.behind+' commit'+(d.behind===1?'':'s')+' behind). Click to install.'}
+else{updateReady=null;delete updateBtn.dataset.mode;updateBtn.textContent='UP TO DATE';updateBtn.title='Running the latest version ('+d.current_version+')';if(interactive)setTimeout(()=>{updateBtn.textContent=orig},3500)}}
+catch(e){console.warn('Update check error:',e);updateBtn.textContent=orig}finally{updateBtn.disabled=false}}
+ael(updateBtn,'click',async()=>{if(updateBtn.dataset.mode==='install'&&updateReady&&!confirm('Install Ultron v'+updateReady.latest_version+'? The server will restart and this page will reload.'))return;if(!confirm('Check the cloud for Ultron updates?'))return;await checkForUpdates(true);if(updateBtn.dataset.mode!=='install')return;updateBtn.disabled=true;updateBtn.textContent='INSTALLING…';try{const r=await fetch('/api/update/apply',{method:'POST'});const d=await r.json();if(d.ok&&d.updated){updateBtn.textContent=d.restarting?'RESTARTING…':'UPDATED — RESTART NEEDED';updateBtn.title=d.message||'';if(d.restarting)setTimeout(()=>location.reload(),6000)}else if(d.ok){updateBtn.textContent='UP TO DATE'}else{updateBtn.textContent='FAILED';updateBtn.title=d.error||'Update failed';console.error('Update failed:',d.error)}}catch(e){console.warn('Update apply error:',e);updateBtn.textContent='FAILED';updateBtn.title='Network error during update'}finally{setTimeout(()=>{updateBtn.disabled=false},2000)}});
+async function init(){await loadSkills();await loadMCPServers();await loadCurrentModel();renderSavedModels();renderVoicePresets();await loadVoiceSettings();await pollState();initialMsgCount=state.lastMsgCount;pageLoaded=true;setInterval(pollState,1500);setInterval(loadMCPServers,1e4);setTimeout(()=>checkForUpdates(false),3000)}
+init();
+</script>
+</body></html>

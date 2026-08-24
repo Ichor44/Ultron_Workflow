@@ -1,0 +1,22 @@
+openai/anthropic (An AI provider of choice)
+Nevidia API key
+Firecrawl API key
+requests
+flask
+flask-socketio
+eventlet
+Flask-CORS
+edge-tts
+sounddevice
+numpy
+Flask-Caching
+redis
+trimesh
+aiohttp
+pytest
+pytest-asyncio
+lxml
+python-docx
+Pillow
+PyYAML
+biotite

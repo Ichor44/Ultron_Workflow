@@ -1,0 +1,22 @@
+# --- Local secrets / keys (NEVER commit) ---
+.env
+
+# --- Runtime data: survives updates, stays local ---
+data/
+logs/
+output/
+proposals/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.bak
+.pytest_cache/
+.venv/
+venv/
+
+# --- OS / editor ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
