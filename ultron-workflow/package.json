@@ -1,0 +1,62 @@
+{
+  "name": "ultron-workflow",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "🤖 Ultron Workflow — Where Science Meets Sarcasm ⚡🧬 | The unified workspace for Ultron, your brilliantly sarcastic superintelligence. Visual workflows 🎨, Protein Lab 🧬 (20+ actions + Boltz-2), DNA Lab 🧫 (Evo2 + plasmid design + CRISPR), Drug Discovery 💊, 3-D Mech & Circuit 🛠️, and Ultron Chat 💬 — all at localhost:5000. He roasts, then results. One command, one port, 100% attitude. 😏👑",
+  "keywords": ["ultron", "workflow", "bioinformatics", "protein-engineering", "dna", "evo2", "boltz2", "drug-discovery", "3d", "vite", "react", "flask", "ai-agent"],
+  "author": "Ichor44",
+  "homepage": "https://github.com/Ichor44/Ultron_Workflow",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ichor44/Ultron_Workflow.git"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit --skipLibCheck && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.7.8",
+    "@react-three/fiber": "^9.7.0",
+    "@types/three": "^0.185.4",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.33.0",
+    "pyodide": "^314.0.5",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tailwind-merge": "^3.6.0",
+    "three": "^0.185.1",
+    "three-stdlib": "^2.36.1",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.5",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.4",
+    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/ui": "^4.1.11",
+    "autoprefixer": "^10.5.4",
+    "happy-dom": "^20.11.6",
+    "jsdom": "^30.0.1",
+    "oxlint": "^1.75.0",
+    "playwright": "^1.62.1",
+    "postcss": "^8.5.26",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~6.0.2",
+    "vite": "^8.2.0",
+    "vitest": "^4.1.11"
+  }
+}
